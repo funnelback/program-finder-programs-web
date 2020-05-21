@@ -1,12 +1,7 @@
-<#ftl encoding="utf-8" />
+<#ftl output_format="HTML" encoding="utf-8" />
 <#import "/web/templates/modernui/funnelback_classic.ftl" as s/>
 <#import "/web/templates/modernui/funnelback.ftl" as fb/>
-<#escape x as x?html>
-<#--
-  Sets HTML encoding as the default for this file only - use <#noescape>...</#noescape> around anything which should not be escaped.
-  Note that if you include macros from another file, they are not affected by this and must hand escaping themselves
-  Either by using a similar escape block, or ?html escapes inline.
--->
+
 <!DOCTYPE html>
 <html lang="en-us">
 <head>
@@ -21,15 +16,13 @@
   <title><@s.AfterSearchOnly>${question.inputParameterMap["query"]!}<@s.IfDefCGI name="query">,&nbsp;</@s.IfDefCGI></@s.AfterSearchOnly><@s.cfg>service_name</@s.cfg>, Funnelback Search</title>
 
   <link rel="stylesheet" href="${GlobalResourcesPrefix}thirdparty/bootstrap-3.3.7/css/bootstrap.min.css">
-  <link rel="stylesheet" type="text/css" href="${GlobalResourcesPrefix}css/funnelback.faceted-navigation.css" />
+  <link rel="stylesheet" type="text/css" href="${GlobalResourcesPrefix}css/funnelback.faceted-navigation-1.0.0.css" />
 
   <#if question.collection.configuration.value('auto-completion') == 'enabled'>
-  <link rel="stylesheet" type="text/css" href="${GlobalResourcesPrefix}css/funnelback.autocompletion.css" />
+  <link rel="stylesheet" type="text/css" href="${GlobalResourcesPrefix}css/funnelback.autocompletion-2.6.0.css" />
   </#if>
 
   <style>
-    [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak { display: none !important; }
-
     .search-initial { padding: 40px 15px; }
     .form-control-inline { color:#555; background-color:#fff; background-image:none; border:1px solid #ccc; border-radius:4px; -webkit-box-shadow:inset 0 1px 1px rgba(0,0,0,.075); box-shadow:inset 0 1px 1px rgba(0,0,0,.075); -webkit-transition:border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s; -o-transition:border-color ease-in-out .15s,box-shadow ease-in-out .15s; transition:border-color ease-in-out .15s,box-shadow ease-in-out .15s; }
     #search-result-count { margin-bottom: 10px; }
@@ -45,6 +38,8 @@
     svg rect.set     { fill: #d9edf7; }
   </style>
 
+  <script src="${GlobalResourcesPrefix}thirdparty/jquery-3.3.1/jquery.min.js"></script>
+
   <!--[if lt IE 9]>
     <script src="${GlobalResourcesPrefix}thirdparty/html5shiv.js"></script>
     <script src="${GlobalResourcesPrefix}thirdparty/respond.min.js"></script>
@@ -52,7 +47,7 @@
 
   <!-- Template uses <a href="http://getbootstrap.com/">Bootstrap</a> and <a href="http://glyphicons.getbootstrap.com/">Glyphicons</a> -->
 </head>
-<body <#if question.collection.configuration.valueAsBoolean("ui.modern.session")> data-ng-app="Funnelback" data-ng-controller="DefaultCtrl"</#if>>
+<body>
 <div class="container">
   <@fb.ViewModeBanner />
 
@@ -108,9 +103,9 @@
           <@s.IfDefCGI name="lang"><input type="hidden" name="lang" value="${question.inputParameterMap["lang"]!}"></@s.IfDefCGI>
           <@s.IfDefCGI name="profile"><input type="hidden" name="profile" value="${question.inputParameterMap["profile"]!}"></@s.IfDefCGI>
           <div class="form-group">
-            <input required name="query" id="query" title="Search query" type="text" value="${question.inputParameterMap["query"]!}" accesskey="q" placeholder="Search <@s.cfg>service_name</@s.cfg>&hellip;" class="form-control query" data-ng-disabled="isDisplayed('cart') || isDisplayed('history')">
+            <input required name="query" id="query" title="Search query" type="text" value="${question.inputParameterMap["query"]!}" accesskey="q" placeholder="Search <@s.cfg>service_name</@s.cfg>&hellip;" class="form-control query">
           </div>
-          <button type="submit" class="btn btn-primary" data-ng-disabled="isDisplayed('cart') || isDisplayed('history')"><span class="glyphicon glyphicon-search"></span> Search</button>
+          <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span> Search</button>
           <div class="checkbox-inline">
             <@s.FacetScope> Within selected categories only</@s.FacetScope>
           </div>
@@ -118,13 +113,13 @@
 
         <ul class="nav navbar-nav navbar-right">
           <#if question.collection.configuration.valueAsBoolean("ui.modern.session")>
-            <li data-ng-class="{active: isDisplayed('cart')}"><a href="#" data-ng-click="toggleCart()" title="{{cart.length}} item(s) in your selection"><span class="glyphicon glyphicon-shopping-cart"></span> <span class="badge" data-ng-cloak>{{cart.length}}</ng-pluralize --></span></a></li>
+            <li class="flb-cart-count"></li>
           </#if>
           <li class="dropdown">
             <a href="#" title="Advanced Settings" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-cog"></span> <span class="caret"></span></a>
             <ul class="dropdown-menu">
               <li><a data-toggle="collapse" href="#search-advanced" title="Advanced search">Advanced search</a></li>
-              <#if question.collection.configuration.valueAsBoolean("ui.modern.session")><li data-ng-class="{active: isDisplayed('history')}"><a href="#"  data-ng-click="toggleHistory()" title="Search History">History</a></li></#if>
+              <#if question.collection.configuration.valueAsBoolean("ui.modern.session")><li><a class="session-history-toggle">History</a></li></#if>
             </ul>
           </li>
           <li class="dropdown">
@@ -195,16 +190,16 @@
                   </div>
 
                   <div class="form-group">
-                    <label for="meta_a" class="col-md-4 control-label">Author</label>
+                    <label for="meta_author" class="col-md-4 control-label">Author</label>
                     <div class="col-md-8">
-                      <input type="text" id="meta_a" name="meta_a" placeholder="e.g. William Shakespeare" value="${question.inputParameterMap["meta_a"]!}" class="form-control input-sm">
+                      <input type="text" id="meta_author" name="meta_author" placeholder="e.g. William Shakespeare" value="${question.inputParameterMap["meta_author"]!}" class="form-control input-sm">
                     </div>
                   </div>
 
                   <div class="form-group">
-                    <label for="meta_s" class="col-md-4 control-label">Subject</label>
+                    <label for="meta_keyword" class="col-md-4 control-label">Subject</label>
                     <div class="col-md-8">
-                      <input type="text" id="meta_s" name="meta_s" placeholder="e.g. comedy" value="${question.inputParameterMap["meta_s"]!}" class="form-control input-sm">
+                      <input type="text" id="meta_keyword" name="meta_keyword" placeholder="e.g. comedy" value="${question.inputParameterMap["meta_keyword"]!}" class="form-control input-sm">
                     </div>
                   </div>
 
@@ -328,13 +323,13 @@
       </div>
     </div>
 
-    <div class="row" data-ng-show="isDisplayed('results')">
+    <div id="search-results-content" class="row">
     
       <#-- Display tabbed faceted navigation -->
       <#if response.facets??>
         <#list response.facets as facet>
           <#if facet.allValues?size gt 0 && facet.guessedDisplayType == "TAB">
-          <div class="col-md-12">
+          <div id="faceted-nav-tabs" class="col-md-12">
             <ul class="nav nav-tabs">
               <#list facet.allValues as value>
               <li role="presentation" class="${(value.count?? && value.count lt 1)?then('disabled', '')} ${value.selected?then('active', '')}">
@@ -355,17 +350,19 @@
 
           <#assign qsSignature = computeQueryStringSignature(QueryString) />
           <#if session.searchHistory?? && (session.searchHistory?size gt 1 || session.searchHistory[0].searchParamsSignature != qsSignature)>
-            <div class="breadcrumb" data-ng-controller="SearchHistoryCtrl" data-ng-show="!searchHistoryEmpty">
-              <button class="btn btn-link pull-right" data-ng-click="toggleHistory()"><small class="text-muted"><span class="glyphicon glyphicon-plus"></span> More&hellip;</small></button>
+            <div class="breadcrumb session-history-breadcrumb">
+              <button class="btn btn-link pull-right session-history-show"><small class="text-muted"><span class="glyphicon glyphicon-plus"></span> More&hellip;</small></button>
               <ol class="list-inline" >
                 <li class="text-muted">Recent:</li>
                 <#list session.searchHistory as h>
                   <#if h.searchParamsSignature != qsSignature>
+                    <#outputformat "plainText">
                     <#assign facetDescription><#compress>
                     <#list h.searchParams?matches("f\\.([^=]+)=([^&]+)") as f>
                         ${urlDecode(f?groups[1])?split("|")[0]} = ${urlDecode(f?groups[2])}<#if f_has_next><br></#if>
                     </#list>
                     </#compress></#assign>
+                    </#outputformat>
                     <li>
                       <a <#if facetDescription != ""> data-toggle="tooltip" data-placement="bottom" title="${facetDescription}"</#if> title="${prettyTime(h.searchDate)}" href="${question.collection.configuration.value("ui.modern.search_link")}?${h.searchParams}">${h.originalQuery!} <small>(${h.totalMatching})</small></a>
                       <#if facetDescription != ""><i class="glyphicon glyphicon-filter"></i></a></#if>
@@ -380,7 +377,7 @@
         <#if question.inputParameterMap["scope"]!?length != 0>
           <div class="breadcrumb">
             <span class="text-muted"><span class="glyphicon glyphicon-resize-small"></span> Scope:</span> <@s.Truncate length=80>${question.inputParameterMap["scope"]!}</@s.Truncate>
-            <a class="button btn-xs" title="Remove scope: ${question.inputParameterMap["scope"]!}" href="?collection=${question.inputParameterMap["collection"]!}<#if question.inputParameterMap["form"]??>&amp;form=${question.inputParameterMap["form"]!}</#if>&amp;query=<@s.URLEncode><@s.QueryClean /></@s.URLEncode>"><span class="glyphicon glyphicon-remove text-muted"></span></a>
+            <a class="button btn-xs" title="Remove scope: ${question.inputParameterMap["scope"]!}" href="?collection=${question.inputParameterMap["collection"]!}<#if question.inputParameterMap["profile"]??>&amp;profile=${question.inputParameterMap["profile"]!}</#if><#if question.inputParameterMap["form"]??>&amp;form=${question.inputParameterMap["form"]!}</#if>&amp;query=<@s.URLEncode><@s.QueryClean /></@s.URLEncode>"><span class="glyphicon glyphicon-remove text-muted"></span></a>
           </div>
         </#if>
 
@@ -450,7 +447,7 @@
           <#list response.curator.exhibits as exhibit>
             <#if exhibit.messageHtml??>
               <blockquote class="search-curator-message">
-                <#noescape>${exhibit.messageHtml}</#noescape>
+                ${exhibit.messageHtml?no_esc}
               </blockquote>
             </#if>
           </#list>
@@ -484,9 +481,9 @@
             <#list response.curator.exhibits as exhibit>
               <#if exhibit.titleHtml?? && exhibit.linkUrl??>
                 <li class="alert alert-warning">
-                  <h4><a href="${exhibit.linkUrl}"><@s.boldicize><#noescape>${exhibit.titleHtml}</#noescape></@s.boldicize></a></h4>
+                  <h4><a href="${exhibit.linkUrl}"><@s.boldicize>${exhibit.titleHtml?no_esc}</@s.boldicize></a></h4>
                   <#if exhibit.displayUrl??><cite class="text-success">${exhibit.displayUrl}</cite></#if>
-                  <#if exhibit.descriptionHtml??><p><@s.boldicize><#noescape>${exhibit.descriptionHtml}</#noescape></@s.boldicize></p></#if>
+                  <#if exhibit.descriptionHtml??><p><@s.boldicize>${exhibit.descriptionHtml?no_esc}</@s.boldicize></p></#if>
                 </li>
               </#if>
             </#list>
@@ -495,7 +492,7 @@
               <li class="alert alert-warning">
                 <#if s.bb.title??><h4><a href="${s.bb.clickTrackingUrl}"><@s.boldicize>${s.bb.title}</@s.boldicize></a></h4></#if>
                 <#if s.bb.title??><cite class="text-success">${s.bb.link}</cite></#if>
-                <#if s.bb.description??><p><@s.boldicize><#noescape>${s.bb.description}</#noescape></@s.boldicize></p></#if>
+                <#if s.bb.description??><p><@s.boldicize>${s.bb.description?no_esc}</@s.boldicize></p></#if>
                 <#if ! s.bb.title??><p><strong>${s.bb.trigger}:</strong> <a href="${s.bb.link}">${s.bb.link}</a></#if>
               </li>
             </@s.BestBets>
@@ -519,19 +516,18 @@
               <li data-fb-result="${s.result.indexUrl}" class="result<#if !s.result.documentVisibleToUser>-undisclosed</#if>">
 
                 <h4 <#if !s.result.documentVisibleToUser>style="margin-bottom:4px"</#if>>
-                  <#if question.collection.configuration.valueAsBoolean("ui.modern.session")><a href="#" data-ng-click="toggle()" data-cart-link data-css="pushpin|remove" title="{{label}}"><small class="glyphicon glyphicon-{{css}}"></small></a></#if>
                   <#if !s.result.documentVisibleToUser>
                     <span class="text-muted">Undisclosed search result</span>
                   <#else>
                     <a href="${s.result.clickTrackingUrl}" title="${s.result.liveUrl}">
-                      <@s.boldicize><@s.Truncate length=70>${s.result.title}</@s.Truncate></@s.boldicize>
+                      <@s.boldicize><@s.Truncate length=140>${s.result.title}</@s.Truncate></@s.boldicize>
                     </a>
                   </#if>
 
                   <#if s.result.fileType!?matches("(doc|docx|ppt|pptx|rtf|xls|xlsx|xlsm|pdf)", "r")>
                     <small class="text-muted">${s.result.fileType?upper_case} (${filesize(s.result.fileSize!0)})</small>
                   </#if>
-                  <#if question.collection.configuration.valueAsBoolean("ui.modern.session") && session?? && session.getClickHistory(s.result.indexUrl)??><small class="text-warning"><span class="glyphicon glyphicon-time"></span> <a title="Click history" href="#" class="text-warning" data-ng-click="toggleHistory()">Last visited ${prettyTime(session.getClickHistory(s.result.indexUrl).clickDate)}</a></small></#if>
+                  <#if question.collection.configuration.valueAsBoolean("ui.modern.session") && session?? && session.getClickHistory(s.result.indexUrl)??><small class="text-warning session-history-link"><span class="glyphicon glyphicon-time"></span> <a title="Click history" href="#" class="text-warning session-history-show">Last visited ${prettyTime(session.getClickHistory(s.result.indexUrl).clickDate)}</a></small></#if>
                 </h4>
 
                 <#if !s.result.documentVisibleToUser>
@@ -582,28 +578,31 @@
                 <#if s.result.summary??>
                   <p>
                     <#if s.result.date??><small class="text-muted">${s.result.date?date?string("d MMM yyyy")}:</small></#if>
-                    <span class="search-summary"><@s.boldicize><#noescape>${s.result.summary}</#noescape></@s.boldicize></span>
+                    <span class="search-summary"><@s.boldicize>${s.result.summary?no_esc}</@s.boldicize></span>
                   </p>
+                <#else>                
+                    <#if s.result.metaData["c"]??><p><@s.boldicize>${s.result.metaData["c"]!}</@s.boldicize></p></#if>
                 </#if>
+
                 <#if !s.result.documentVisibleToUser>
                   <p>
                     <span class="search-summary text-muted"><em>Information for this search result cannot be shown for sensitivity reasons.</em></span>
                   </p>
                 </#if>
 
-                <#if s.result.metaData["c"]??><p><@s.boldicize>${s.result.metaData["c"]!}</@s.boldicize></p></#if>
-
                 <#if s.result.collapsed??>
                   <div class="search-collapsed"><small><span class="glyphicon glyphicon-expand text-muted"></span>&nbsp; <@fb.Collapsed /></small></div>
                 </#if>
 
-                <#if s.result.metaData["author"]?? || s.result.metaData["subject"]?? || s.result.metaData["publisher"]??>
-                  <dl class="dl-horizontal text-muted">
-                  <#if s.result.metaData["author"]??><dt>by</dt><dd>${s.result.metaData["author"]!?replace("|", ", ")}</dd></#if>
-                  <#if s.result.metaData["subject"]??><dt>Keywords:</dt><dd>${s.result.metaData["subject"]!?replace("|", ", ")}</dd></#if>
-                  <#if s.result.metaData["publisher"]??><dt>Publisher:</dt><dd>${s.result.metaData["publisher"]!?replace("|", ", ")}</dd></#if>
-                  </dl>
-                </#if>
+                <dl class="dl-horizontal text-muted">
+                <#assign metaDataClassDisplayLabels = {"d": "Date"} />
+                <#list s.result.listMetadata?keys as metaDataKey>
+                    <#if metaDataKey != "t" && metaDataKey != "c" && !metaDataKey?starts_with("Fun")>
+                        <#assign metaDataLabel = (metaDataClassDisplayLabels[metaDataKey])!metaDataKey />
+                        <dt>${metaDataLabel}:</dt><dd>${s.result.listMetadata[metaDataKey]?join(", ")}</dd>
+                    </#if>
+                </#list>
+                </dl>
               </li>
             </#if>
           </@s.Results>
@@ -620,7 +619,7 @@
                   <div class="col-md-4 search-contextual-navigation-type">
                     <h4>Types of <strong>${s.contextualNavigation.searchTerm}</strong></h4>
                     <ul class="list-unstyled">
-                      <@s.Clusters><li><a href="${s.cluster.href}"> <#noescape>${s.cluster.label?html?replace("...", " <strong>"+s.contextualNavigation.searchTerm?html+"</strong> ")}</#noescape></a></li></@s.Clusters>
+                      <@s.Clusters><li><a href="${s.cluster.href}"><#noautoesc>${s.cluster.label?html?replace("...", " <strong>"+s.contextualNavigation.searchTerm?html+"</strong> ")}</#noautoesc></a></li></@s.Clusters>
                       <@s.ShowMoreClusters category="type"><li><a rel="more" href="${changeParam(s.category.moreLink, "type_max_clusters", "40")}" class="btn btn-link btn-sm"><small class="glyphicon glyphicon-plus"></small> More&hellip;</a></li></@s.ShowMoreClusters>
                       <@s.ShowFewerClusters category="type" />
                     </ul>
@@ -631,7 +630,7 @@
                     <div class="col-md-4 search-contextual-navigation-topic">
                       <h4>Topics on <strong>${s.contextualNavigation.searchTerm}</strong></h4>
                       <ul class="list-unstyled">
-                        <@s.Clusters><li><a href="${s.cluster.href}"> <#noescape>${s.cluster.label?html?replace("...", " <strong>"+s.contextualNavigation.searchTerm?html+"</strong> ")}</#noescape></a></li></@s.Clusters>
+                        <@s.Clusters><li><a href="${s.cluster.href}"><#noautoesc>${s.cluster.label?html?replace("...", " <strong>"+s.contextualNavigation.searchTerm?html+"</strong> ")}</#noautoesc></a></li></@s.Clusters>
                         <@s.ShowMoreClusters category="topic"><li><a rel="more" href="${changeParam(s.category.moreLink, "topic_max_clusters", "40")}" class="btn btn-link btn-sm"><small class="glyphicon glyphicon-plus"></small> More&hellip;</a></li></@s.ShowMoreClusters>
                         <@s.ShowFewerClusters category="topic" />
                       </ul>
@@ -694,10 +693,10 @@
                   <span class="item-label">
                     <#if facet.guessedDisplayType == 'RADIO_BUTTON'>
                       <span class="${value.selected?then('glyphicon glyphicon-record', 'radio-unchecked')}"></span>
-                      <span class="hidden"><#noescape>${value.selected?then('&#128280;', '&#9711;')}</#noescape></span><#-- Fall back to Unicode chars if bootstrap is unavailable -->
+                      <span class="hidden">${value.selected?then('&#128280;', '&#9711;')?no_esc}</span><#-- Fall back to Unicode chars if bootstrap is unavailable -->
                     <#elseif facet.guessedDisplayType == 'CHECKBOX'>
                       <span class="glyphicon glyphicon-${value.selected?then('check', 'unchecked')}"></span>
-                      <span class="hidden"><#noescape>${value.selected?then('&#9745;', '&#9744;')}</#noescape></span><#-- Fall back to Unicode chars if bootstrap is unavailable -->
+                      <span class="hidden">${value.selected?then('&#9745;', '&#9744;')?no_esc}</span><#-- Fall back to Unicode chars if bootstrap is unavailable -->
                     <#elseif value.selected>
                       <#if facet.guessedDisplayType == "SINGLE_DRILL_DOWN" && value?counter != 1><span style="margin-left: ${(value?counter - 1) * 10}px">&#8627;</span></#if>
                       <small class="glyphicon glyphicon-remove"></small>
@@ -725,71 +724,47 @@
     </div>
 
     <#if question.collection.configuration.valueAsBoolean("ui.modern.session")>
-      <div id="search-history" data-ng-cloak data-ng-show="isDisplayed('history')">
+      <div id="search-history">
         <div class="row">
           <div class="col-md-12">
-            <a href="#" data-ng-click="hideHistory()"><span class="glyphicon glyphicon-arrow-left"></span> Back to results</a>
+            <a href="#" class="session-history-hide"><span class="glyphicon glyphicon-arrow-left"></span> Back to results</a>
             <h2><span class="glyphicon glyphicon-time"></span> History</h2>
 
             <div class="row">
-              <div class="col-md-6" data-ng-controller="ClickHistoryCtrl">
-                <div data-ng-show="!clickHistoryEmpty && <@fb.HasClickHistory />">
-                  <h3><span class="glyphicon glyphicon-heart"></span> Recently clicked results
-                    <button class="btn btn-danger btn-xs" title="Clear click history" data-ng-click="clear('Your history will be cleared')"><span class="glyphicon glyphicon-remove"></span> Clear</button>
-                  </h3>
-                  <ul class="list-unstyled">
-                    <#list session.clickHistory as h>
-                      <li><a href="${h.indexUrl}">${h.title}</a> &middot; <span class="text-warning">${prettyTime(h.clickDate)}</span><#if h.query??><span class="text-muted"> for &quot;${h.query!}&quot;</#if></span></li>
-                    </#list>
-                  </ul>
-                </div>
-                <div data-ng-show="clickHistoryEmpty || !<@fb.HasClickHistory />">
-                  <h3><span class="glyphicon glyphicon-heart"></span> Recently clicked results</h3>
-                  <p class="text-muted">Your click history is empty.</p>
-                </div>
-              </div>
-              <div class="col-md-6" data-ng-controller="SearchHistoryCtrl">
-                <div data-ng-show="!searchHistoryEmpty && <@fb.HasSearchHistory />">
-                  <h3><span class="glyphicon glyphicon-search"></span> Recent searches
-                    <button class="btn btn-danger btn-xs" title="Clear search history" data-ng-click="clear('Your history will be cleared')"><span class="glyphicon glyphicon-remove"></span> Clear</button>
-                  </h3>
-                  <ul class="list-unstyled">
-                    <#list session.searchHistory as h>
-                      <li><a href="?${h.searchParams}">${h.originalQuery!} <small>(${h.totalMatching})</small></a> &middot; <span class="text-warning">${prettyTime(h.searchDate)}</span></li>
-                    </#list>
-                  </ul>
-                </div>
-                <div data-ng-show="searchHistoryEmpty || !<@fb.HasSearchHistory />">
-                  <h3><span class="glyphicon glyphicon-search"></span> Recent searches</h3>
-                  <p class="text-muted">Your search history is empty.</p>
-                </div>
-              </div>
+              <div class="col-md-6">
+  <h3>
+    <span class="glyphicon glyphicon-heart"></span> Recently clicked results
+    <button class="btn btn-danger btn-xs session-history-clear-click" title="Clear click history"><span class="glyphicon glyphicon-remove"></span> Clear</button>
+  </h3>
+  <#list session.clickHistory>
+    <ul class="session-history-click-results">
+    <#items as h>
+      <li><a href="${h.indexUrl}">${h.title}</a> &middot; <span class="text-warning">${prettyTime(h.clickDate)}</span><#if h.query??><span class="text-muted"> for &quot;${h.query!}&quot;</#if></span></li>
+    </#items>
+    </ul>
+  </#list>
+  <p class="session-history-click-empty text-muted">Your click history is empty.</p>
+</div>
+              <div class="col-md-6">
+  <h3>
+    <span class="glyphicon glyphicon-search"></span> Recent searches
+    <button class="btn btn-danger btn-xs session-history-clear-search" title="Clear search history"><span class="glyphicon glyphicon-remove"></span> Clear</button>
+  </h3>
+  <#list session.searchHistory>
+    <ul class="session-history-search-results list-unstyled">
+    <#items as h>
+      <li><a href="?${h.searchParams}">${h.originalQuery!} <small>(${h.totalMatching})</small></a> &middot; <span class="text-warning">${prettyTime(h.searchDate)}</span></li>
+    </#items>
+    </ul>
+  </#list>
+  <p class="session-history-search-empty text-muted">Your search history is empty.</p>
+</div>
             </div>
           </div>
         </div>
       </div>
 
-      <div id="search-cart" data-ng-cloak data-ng-show="isDisplayed('cart')" data-ng-controller="CartCtrl">
-        <div class="row">
-          <div class="col-md-12">
-            <a href="#" data-ng-click="hideCart()"><span class="glyphicon glyphicon-arrow-left"></span> Back to results</a>
-            <h2><span class="glyphicon glyphicon-pushpin"></span> Saved
-              <button class="btn btn-danger btn-xs" title="Clear selection" data-ng-click="clear('Your selection will be cleared')"><span class="glyphicon glyphicon-remove"></span> Clear</button>
-            </h2>
-
-            <ul class="list-unstyled">
-              <li data-ng-repeat="item in cart">
-                <h4>
-                  <a title="Remove" data-ng-click="remove(item.indexUrl)" href="javascript:;"><small class="glyphicon glyphicon-remove"></small></a>
-                  <a href="{{item.indexUrl}}">{{item.title|truncate:70}}</a>
-                </h4>
-
-                <cite class="text-success">{{item.indexUrl|cut:'http://'}}</cite>
-                <p>{{item.summary|truncate:255}}</p>
-              </li>
-            </ul>
-          </div>
-        </div>
+      <div id="search-cart"></div>
 
       </div>
     </#if>
@@ -822,7 +797,7 @@
               <#if response?? && response.resultPacket??
                 && response.resultPacket.svgs??
                 && response.resultPacket.svgs["syntaxtree"]??>
-                <#noescape>${response.resultPacket.svgs["syntaxtree"]}</#noescape>
+                ${response.resultPacket.svgs["syntaxtree"]?no_esc}
               <#else>
                 <div class="alert alert-warning">Query syntax tree unavailable. Make sure the <code>-show_qsyntax_tree=on</code> query processor option is set.</div>
               </#if>
@@ -844,13 +819,12 @@
 
 </div>
 
-<script src="${GlobalResourcesPrefix}js/jquery/jquery-1.10.2.min.js"></script>
 <script src="${GlobalResourcesPrefix}thirdparty/bootstrap-3.3.7/js/bootstrap.min.js"></script>
 
 <#if question.collection.configuration.value('auto-completion') == 'enabled'>
-<script src="${GlobalResourcesPrefix}js/typeahead.bundle.js"></script>
-<script src="${GlobalResourcesPrefix}js/handlebars.js"></script>
-<script src="${GlobalResourcesPrefix}js/funnelback.autocompletion.js"></script>
+<script src="${GlobalResourcesPrefix}thirdparty/typeahead-0.11.1/typeahead.bundle.min.js"></script>
+<script src="${GlobalResourcesPrefix}thirdparty/handlebars-4.1/handlebars.min.js"></script>
+<script src="${GlobalResourcesPrefix}js/funnelback.autocompletion-2.6.0.js"></script>
 <script>
   jQuery(document).ready(function() {
     jQuery('input.query').autocompletion({
@@ -890,9 +864,14 @@
 </#if>
 
 <#if question.collection.configuration.valueAsBoolean("ui.modern.session")>
-<script src="${GlobalResourcesPrefix}thirdparty/angular-1.0.7/angular.js"></script>
-<script src="${GlobalResourcesPrefix}thirdparty/angular-1.0.7/angular-resource.js"></script>
-<script src="${GlobalResourcesPrefix}js/funnelback-session.js"></script>
+<script type="text/javascript" src="${GlobalResourcesPrefix}thirdparty/es6-promise-4.2.5/es6-promise.auto.min.js"></script>
+<script type="text/javascript" src="${GlobalResourcesPrefix}js/funnelback.session-cart-0.1.min.js"></script>
+<script type="text/javascript" src="${GlobalResourcesPrefix}js/funnelback.session-history-0.1.min.js"></script>
+
+<script type="text/javascript">
+  var flbSessionCart = new Funnelback.SessionCart({collection: '${question.collection.id}'});
+  var flbSessionHistory = new Funnelback.SessionHistory({collection: '${question.collection.id}'});
+</script>
 </#if>
 
 <script>
@@ -921,5 +900,4 @@
 
 </body>
 </html>
-</#escape>
 <#-- vim: set expandtab ts=2 sw=2 sts=2 :-->
