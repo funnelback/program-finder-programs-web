@@ -11,9 +11,9 @@
   <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 
   <@s.OpenSearch />
-  <@s.AfterSearchOnly><link rel="alternate" type="application/rss+xml" title="Search results for ${question.inputParameterMap["query"]!}<@s.IfDefCGI name="query">,&nbsp;</@s.IfDefCGI><@s.cfg>service_name</@s.cfg>" href="?collection=<@s.cfg>collection</@s.cfg>&amp;query=${question.inputParameterMap["query"]!?url}&amp;form=rss&amp;sort=date"></@s.AfterSearchOnly>
+  <@s.AfterSearchOnly><link rel="alternate" type="application/rss+xml" title="Search results for ${question.inputParameters["query"]?first!}<@s.IfDefCGI name="query">,&nbsp;</@s.IfDefCGI><@s.cfg>service_name</@s.cfg>" href="?collection=<@s.cfg>collection</@s.cfg>&amp;query=${question.inputParameters["query"]?first!?url}&amp;form=rss&amp;sort=date"></@s.AfterSearchOnly>
 
-  <title><@s.AfterSearchOnly>${question.inputParameterMap["query"]!}<@s.IfDefCGI name="query">,&nbsp;</@s.IfDefCGI></@s.AfterSearchOnly><@s.cfg>service_name</@s.cfg>, Funnelback Search</title>
+  <title><@s.AfterSearchOnly>${question.inputParameters["query"]?first!}<@s.IfDefCGI name="query">,&nbsp;</@s.IfDefCGI></@s.AfterSearchOnly><@s.cfg>service_name</@s.cfg>, Funnelback Search</title>
 
   <link rel="stylesheet" href="${GlobalResourcesPrefix}thirdparty/bootstrap-3.3.7/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="${GlobalResourcesPrefix}css/funnelback.faceted-navigation-1.0.0.css" />
@@ -64,14 +64,14 @@
           <br><br>
 
           <form action="${question.collection.configuration.value("ui.modern.search_link")}" method="GET">
-            <input type="hidden" name="collection" value="${question.inputParameterMap["collection"]!}">
-            <@s.IfDefCGI name="enc"><input type="hidden" name="enc" value="${question.inputParameterMap["enc"]!}"></@s.IfDefCGI>
-            <@s.IfDefCGI name="form"><input type="hidden" name="form" value="${question.inputParameterMap["form"]!}"></@s.IfDefCGI>
-            <@s.IfDefCGI name="scope"><input type="hidden" name="scope" value="${question.inputParameterMap["scope"]!}"></@s.IfDefCGI>
-            <@s.IfDefCGI name="lang"><input type="hidden" name="lang" value="${question.inputParameterMap["lang"]!}"></@s.IfDefCGI>
-            <@s.IfDefCGI name="profile"><input type="hidden" name="profile" value="${question.inputParameterMap["profile"]!}"></@s.IfDefCGI>
+            <input type="hidden" name="collection" value="${question.inputParameters["collection"]?first!}">
+            <@s.IfDefCGI name="enc"><input type="hidden" name="enc" value="${question.inputParameters["enc"]?first!}"></@s.IfDefCGI>
+            <@s.IfDefCGI name="form"><input type="hidden" name="form" value="${question.inputParameters["form"]?first!}"></@s.IfDefCGI>
+            <@s.IfDefCGI name="scope"><input type="hidden" name="scope" value="${question.inputParameters["scope"]?first!}"></@s.IfDefCGI>
+            <@s.IfDefCGI name="lang"><input type="hidden" name="lang" value="${question.inputParameters["lang"]?first!}"></@s.IfDefCGI>
+            <@s.IfDefCGI name="profile"><input type="hidden" name="profile" value="${question.inputParameters["profile"]?first!}"></@s.IfDefCGI>
             <div class="input-group">
-              <input required name="query" id="query" title="Search query" type="text" value="${question.inputParameterMap["query"]!}" accesskey="q" placeholder="Search <@s.cfg>service_name</@s.cfg>&hellip;" class="form-control input-lg query">
+              <input required name="query" id="query" title="Search query" type="text" value="${question.inputParameters["query"]?first!}" accesskey="q" placeholder="Search <@s.cfg>service_name</@s.cfg>&hellip;" class="form-control input-lg query">
               <div class="input-group-btn">
                 <button type="submit" class="btn btn-primary input-lg"><span class="glyphicon glyphicon-search"></span> Search</button>
               </div>
@@ -96,14 +96,14 @@
 
       <div class="collapse navbar-collapse">
         <form class="navbar-form navbar-left form-inline" action="${question.collection.configuration.value("ui.modern.search_link")}" method="GET">
-          <input type="hidden" name="collection" value="${question.inputParameterMap["collection"]!}">
-          <@s.IfDefCGI name="enc"><input type="hidden" name="enc" value="${question.inputParameterMap["enc"]!}"></@s.IfDefCGI>
-          <@s.IfDefCGI name="form"><input type="hidden" name="form" value="${question.inputParameterMap["form"]!}"></@s.IfDefCGI>
-          <@s.IfDefCGI name="scope"><input type="hidden" name="scope" value="${question.inputParameterMap["scope"]!}"></@s.IfDefCGI>
-          <@s.IfDefCGI name="lang"><input type="hidden" name="lang" value="${question.inputParameterMap["lang"]!}"></@s.IfDefCGI>
-          <@s.IfDefCGI name="profile"><input type="hidden" name="profile" value="${question.inputParameterMap["profile"]!}"></@s.IfDefCGI>
+          <input type="hidden" name="collection" value="${question.inputParameters["collection"]?first!}">
+          <@s.IfDefCGI name="enc"><input type="hidden" name="enc" value="${question.inputParameters["enc"]?first!}"></@s.IfDefCGI>
+          <@s.IfDefCGI name="form"><input type="hidden" name="form" value="${question.inputParameters["form"]?first!}"></@s.IfDefCGI>
+          <@s.IfDefCGI name="scope"><input type="hidden" name="scope" value="${question.inputParameters["scope"]?first!}"></@s.IfDefCGI>
+          <@s.IfDefCGI name="lang"><input type="hidden" name="lang" value="${question.inputParameters["lang"]?first!}"></@s.IfDefCGI>
+          <@s.IfDefCGI name="profile"><input type="hidden" name="profile" value="${question.inputParameters["profile"]?first!}"></@s.IfDefCGI>
           <div class="form-group">
-            <input required name="query" id="query" title="Search query" type="text" value="${question.inputParameterMap["query"]!}" accesskey="q" placeholder="Search <@s.cfg>service_name</@s.cfg>&hellip;" class="form-control query">
+            <input required name="query" id="query" title="Search query" type="text" value="${question.inputParameters["query"]?first!}" accesskey="q" placeholder="Search <@s.cfg>service_name</@s.cfg>&hellip;" class="form-control query">
           </div>
           <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span> Search</button>
           <div class="checkbox-inline">
@@ -137,13 +137,13 @@
       <div class="row">
         <div class="col-md-12">
           <form action="${question.collection.configuration.value("ui.modern.search_link")}" method="GET" class="form-horizontal">
-            <input type="hidden" name="collection" value="${question.inputParameterMap["collection"]!}">
+            <input type="hidden" name="collection" value="${question.inputParameters["collection"]?first!}">
             <input type="hidden" name="from-advanced" value="true">
             <input type="hidden" name="facetScope" value="<@s.FacetScope input=false />">
-            <@s.IfDefCGI name="enc"><input type="hidden" name="enc" value="${question.inputParameterMap["enc"]!}"></@s.IfDefCGI>
-            <@s.IfDefCGI name="form"><input type="hidden" name="form" value="${question.inputParameterMap["form"]!}"></@s.IfDefCGI>
-            <@s.IfDefCGI name="scope"><input type="hidden" name="scope" value="${question.inputParameterMap["scope"]!}"></@s.IfDefCGI>
-            <@s.IfDefCGI name="profile"><input type="hidden" name="profile" value="${question.inputParameterMap["profile"]!}"></@s.IfDefCGI>
+            <@s.IfDefCGI name="enc"><input type="hidden" name="enc" value="${question.inputParameters["enc"]?first!}"></@s.IfDefCGI>
+            <@s.IfDefCGI name="form"><input type="hidden" name="form" value="${question.inputParameters["form"]?first!}"></@s.IfDefCGI>
+            <@s.IfDefCGI name="scope"><input type="hidden" name="scope" value="${question.inputParameters["scope"]?first!}"></@s.IfDefCGI>
+            <@s.IfDefCGI name="profile"><input type="hidden" name="profile" value="${question.inputParameters["profile"]?first!}"></@s.IfDefCGI>
 
             <div class="row">
               <div class="col-md-4">
@@ -152,28 +152,28 @@
                   <div class="form-group">
                     <label class="col-md-4 control-label" for="query-advanced">Any</label>
                     <div class="col-md-8">
-                      <input type="text" id="query-advanced" name="query" value="${question.inputParameterMap["query"]!}" class="form-control input-sm" placeholder="e.g. juliet where thou love">
+                      <input type="text" id="query-advanced" name="query" value="${question.inputParameters["query"]?first!}" class="form-control input-sm" placeholder="e.g. juliet where thou love">
                     </div>
                   </div>
 
                   <div class="form-group">
                     <label for="query_and" class="col-md-4 control-label">All</label>
                     <div class="col-md-8">
-                      <input type="text" id="query_and" name="query_and" value="${question.inputParameterMap["query_and"]!}" class="form-control input-sm" placeholder="e.g. juliet where thou love">
+                      <input type="text" id="query_and" name="query_and" value="${question.inputParameters["query_and"]?first!}" class="form-control input-sm" placeholder="e.g. juliet where thou love">
                     </div>
                   </div>
 
                   <div class="form-group">
                     <label for="query_phrase" class="col-md-4 control-label">Phrase</label>
                     <div class="col-md-8">
-                      <input type="text" id="query_phrase" name="query_phrase" value="${question.inputParameterMap["query_phrase"]!}" class="form-control input-sm" placeholder="e.g. to be or not to be">
+                      <input type="text" id="query_phrase" name="query_phrase" value="${question.inputParameters["query_phrase"]?first!}" class="form-control input-sm" placeholder="e.g. to be or not to be">
                     </div>
                   </div>
 
                   <div class="form-group">
                     <label for="query_not" class="col-md-4 control-label">Not</label>
                     <div class="col-md-8">
-                      <input type="text" id="query_not" name="query_not" value="${question.inputParameterMap["query_not"]!}" class="form-control input-sm" placeholder="e.g. brutus othello">
+                      <input type="text" id="query_not" name="query_not" value="${question.inputParameters["query_not"]?first!}" class="form-control input-sm" placeholder="e.g. brutus othello">
                     </div>
                   </div>
                 </fieldset>
@@ -185,21 +185,21 @@
                   <div class="form-group">
                     <label for="meta_t" class="col-md-4 control-label">Title</label>
                     <div class="col-md-8">
-                      <input type="text" id="meta_t" name="meta_t" placeholder="e.g. A Midsummer Night's Dream" value="${question.inputParameterMap["meta_t"]!}" class="form-control input-sm">
+                      <input type="text" id="meta_t" name="meta_t" placeholder="e.g. A Midsummer Night's Dream" value="${question.inputParameters["meta_t"]?first!}" class="form-control input-sm">
                     </div>
                   </div>
 
                   <div class="form-group">
                     <label for="meta_author" class="col-md-4 control-label">Author</label>
                     <div class="col-md-8">
-                      <input type="text" id="meta_author" name="meta_author" placeholder="e.g. William Shakespeare" value="${question.inputParameterMap["meta_author"]!}" class="form-control input-sm">
+                      <input type="text" id="meta_author" name="meta_author" placeholder="e.g. William Shakespeare" value="${question.inputParameters["meta_author"]?first!}" class="form-control input-sm">
                     </div>
                   </div>
 
                   <div class="form-group">
                     <label for="meta_keyword" class="col-md-4 control-label">Subject</label>
                     <div class="col-md-8">
-                      <input type="text" id="meta_keyword" name="meta_keyword" placeholder="e.g. comedy" value="${question.inputParameterMap["meta_keyword"]!}" class="form-control input-sm">
+                      <input type="text" id="meta_keyword" name="meta_keyword" placeholder="e.g. comedy" value="${question.inputParameters["meta_keyword"]?first!}" class="form-control input-sm">
                     </div>
                   </div>
 
@@ -253,7 +253,7 @@
                     <label class="control-label col-md-4" for="num_ranks">Results</label>
                       <div class="col-md-8">
                         <div class="input-group">
-                          <input type="number" min="1" id="num_ranks" name="num_ranks" placeholder="e.g. 10" value="${question.inputParameterMap["num_ranks"]!10}" class="form-control input-sm">
+                          <input type="number" min="1" id="num_ranks" name="num_ranks" placeholder="e.g. 10" value="${question.inputParameters["num_ranks"]?first!10}" class="form-control input-sm">
                           <span class="input-group-addon">per page</span>
                         </div>
                     </div>
@@ -269,7 +269,7 @@
                     <div class="col-md-8">
                       <div class="input-group">
                         <span class="input-group-btn"><a class="btn btn-info search-geolocation btn-sm" title="Locate me!" ><span class="glyphicon glyphicon-map-marker"></span></a></span>
-                        <input type="text" id="origin" name="origin" pattern="-?[0-9\.]+,-?[0-9\.]+" title="Latitude,longitude" placeholder="Latitude, Longitude" value="${question.inputParameterMap["origin"]!}" class="form-control input-sm">
+                        <input type="text" id="origin" name="origin" pattern="-?[0-9\.]+,-?[0-9\.]+" title="Latitude,longitude" placeholder="Latitude, Longitude" value="${question.inputParameters["origin"]?first!}" class="form-control input-sm">
                       </div>
                     </div>
                   </div>
@@ -278,7 +278,7 @@
                     <label class="control-label col-md-4" for="maxdist">Distance</label>
                     <div class="col-md-8">
                       <div class="input-group">
-                        <input type="number" min="0" id="maxdist" name="maxdist" placeholder="e.g. 10" value="${question.inputParameterMap["maxdist"]!}" class="form-control input-sm">
+                        <input type="number" min="0" id="maxdist" name="maxdist" placeholder="e.g. 10" value="${question.inputParameters["maxdist"]?first!}" class="form-control input-sm">
                         <span class="input-group-addon">km</span>
                       </div>
                     </div>
@@ -293,14 +293,14 @@
                   <div class="form-group">
                     <label class="control-label col-md-4" for="scope">Domain</label>
                     <div class="col-md-8">
-                      <input type="text" id="scope" name="scope" placeholder="e.g. example.com" value="${question.inputParameterMap["scope"]!}" class="form-control input-sm">
+                      <input type="text" id="scope" name="scope" placeholder="e.g. example.com" value="${question.inputParameters["scope"]?first!}" class="form-control input-sm">
                     </div>
                   </div>
 
                   <div class="form-group">
                     <label class="control-label col-md-4" for="meta_v">Path</label>
                     <div class="col-md-8">
-                      <input type="text" id="meta_v" name="meta_v" placeholder="e.g. /plays/romeo-juliet" value="${question.inputParameterMap["meta_v"]!}" class="form-control input-sm">
+                      <input type="text" id="meta_v" name="meta_v" placeholder="e.g. /plays/romeo-juliet" value="${question.inputParameters["meta_v"]?first!}" class="form-control input-sm">
                     </div>
                   </div>
                 </fieldset>
@@ -374,10 +374,10 @@
           </#if>
         </#if>
 
-        <#if question.inputParameterMap["scope"]!?length != 0>
+        <#if question.inputParameters["scope"]?first!?length != 0>
           <div class="breadcrumb">
-            <span class="text-muted"><span class="glyphicon glyphicon-resize-small"></span> Scope:</span> <@s.Truncate length=80>${question.inputParameterMap["scope"]!}</@s.Truncate>
-            <a class="button btn-xs" title="Remove scope: ${question.inputParameterMap["scope"]!}" href="?collection=${question.inputParameterMap["collection"]!}<#if question.inputParameterMap["profile"]??>&amp;profile=${question.inputParameterMap["profile"]!}</#if><#if question.inputParameterMap["form"]??>&amp;form=${question.inputParameterMap["form"]!}</#if>&amp;query=<@s.URLEncode><@s.QueryClean /></@s.URLEncode>"><span class="glyphicon glyphicon-remove text-muted"></span></a>
+            <span class="text-muted"><span class="glyphicon glyphicon-resize-small"></span> Scope:</span> <@s.Truncate length=80>${question.inputParameters["scope"]?first!}</@s.Truncate>
+            <a class="button btn-xs" title="Remove scope: ${question.inputParameters["scope"]?first!}" href="?collection=${question.inputParameters["collection"]?first!}<#if question.inputParameters["profile"]?first??>&amp;profile=${question.inputParameters["profile"]?first!}</#if><#if question.inputParameters["form"]?first??>&amp;form=${question.inputParameters["form"]?first!}</#if>&amp;query=<@s.URLEncode><@s.QueryClean /></@s.URLEncode>"><span class="glyphicon glyphicon-remove text-muted"></span></a>
           </div>
         </#if>
 
@@ -389,7 +389,7 @@
             <span id="search-page-start">${response.resultPacket.resultsSummary.currStart}</span> -
             <span id="search-page-end">${response.resultPacket.resultsSummary.currEnd}</span> of
             <span id="search-total-matching">${response.resultPacket.resultsSummary.totalMatching?string.number}</span>
-            <#if question.inputParameterMap["s"]?? && question.inputParameterMap["s"]?contains("?:")><em>collapsed</em> </#if>search results for <strong><@s.QueryClean></@s.QueryClean></strong>
+            <#if question.inputParameters["s"]?first?? && question.inputParameters["s"]?first?contains("?:")><em>collapsed</em> </#if>search results for <strong><@s.QueryClean></@s.QueryClean></strong>
           </#if>
 
           <#if (response.resultPacket.resultsSummary.partiallyMatching!0) != 0>
@@ -462,7 +462,7 @@
             <p>Your search for <strong>${question.originalQuery!}</strong> did not return any results. Please ensure that you:</p>
             <ul>
               <li>are not using any advanced search operators like + - | " etc.</li>
-              <li>expect this document to exist within the <em><@s.cfg>service_name</@s.cfg></em> collection <@s.IfDefCGI name="scope"> and within <em><@s.Truncate length=80>${question.inputParameterMap["scope"]!}</@s.Truncate></em></@s.IfDefCGI></li>
+              <li>expect this document to exist within the <em><@s.cfg>service_name</@s.cfg></em> collection <@s.IfDefCGI name="scope"> and within <em><@s.Truncate length=80>${question.inputParameters["scope"]?first!}</@s.Truncate></em></@s.IfDefCGI></li>
               <li>have permission to see any documents that may match your query</li>
             </ul>
         </#if>
@@ -554,12 +554,12 @@
                   <#if question.collection.quickLinksConfiguration["quicklinks.domain_searchbox"]?? && question.collection.quickLinksConfiguration["quicklinks.domain_searchbox"] == "true">
                     <#if s.result.quickLinks.domain?matches("^[^/]*/?[^/]*$", "r")>
                       <form class="quicklinks" action="${question.collection.configuration.value("ui.modern.search_link")}" method="GET">
-                          <input type="hidden" name="collection" value="${question.inputParameterMap["collection"]!}">
+                          <input type="hidden" name="collection" value="${question.inputParameters["collection"]?first!}">
                           <input type="hidden" name="meta_u_sand" value="${s.result.quickLinks.domain}">
-                          <@s.IfDefCGI name="enc"><input type="hidden" name="enc" value="${question.inputParameterMap["enc"]!}"></@s.IfDefCGI>
-                          <@s.IfDefCGI name="form"><input type="hidden" name="form" value="${question.inputParameterMap["form"]!}"></@s.IfDefCGI>
-                          <@s.IfDefCGI name="scope"><input type="hidden" name="scope" value="${question.inputParameterMap["scope"]!}"></@s.IfDefCGI>
-                          <@s.IfDefCGI name="profile"><input type="hidden" name="profile" value="${question.inputParameterMap["profile"]!}"></@s.IfDefCGI>
+                          <@s.IfDefCGI name="enc"><input type="hidden" name="enc" value="${question.inputParameters["enc"]?first!}"></@s.IfDefCGI>
+                          <@s.IfDefCGI name="form"><input type="hidden" name="form" value="${question.inputParameters["form"]?first!}"></@s.IfDefCGI>
+                          <@s.IfDefCGI name="scope"><input type="hidden" name="scope" value="${question.inputParameters["scope"]?first!}"></@s.IfDefCGI>
+                          <@s.IfDefCGI name="profile"><input type="hidden" name="profile" value="${question.inputParameters["profile"]?first!}"></@s.IfDefCGI>
                           <div class="row">
                             <div class="col-md-4">
                             <div class="input-group input-sm">
@@ -581,7 +581,7 @@
                     <span class="search-summary"><@s.boldicize>${s.result.summary?no_esc}</@s.boldicize></span>
                   </p>
                 <#else>                
-                    <#if s.result.metaData["c"]??><p><@s.boldicize>${s.result.metaData["c"]!}</@s.boldicize></p></#if>
+                    <#if s.result.listMetadata["c"]?first??><p><@s.boldicize>${s.result.listMetadata["c"]?first!}</@s.boldicize></p></#if>
                 </#if>
 
                 <#if !s.result.documentVisibleToUser>
